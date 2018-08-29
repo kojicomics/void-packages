@@ -2,13 +2,11 @@
 pkgname=dmenu
 version=4.8
 revision=1
-makedepends="libXinerama-devel libXft-devel freetype-devel"
+makedepends="libXinerama-devel libXft-devel freetype-devel git"
 short_desc="A generic menu for X"
 maintainer="Juan RP <xtraeme@voidlinux.eu>"
 license="MIT"
 homepage="https://tools.suckless.org/dmenu/"
-distfiles="https://dl.suckless.org/tools/${pkgname}-${version}.tar.gz"
-checksum=fe615a5c3607061e2106700862e82ac62a9fa1e6a7ac3d616a9c76106476db61
 
 build_options="fuzzymatch"
 desc_option_fuzzymatch="Enable Fuzzymatch support"
@@ -22,8 +20,12 @@ post_extract() {
 		-e '/LDFLAGS/{s/-s//;s/=/+=/}' config.mk
 }
 
+do_fetch() {
+	git clone -b custom --single-branch https://github.com/kojicomics/dmenu.git ${wrksrc}
+}
+
 do_build() {
-	cp ${FILESDIR}/config.h config.h
+#	cp ${FILESDIR}/config.h config.h
 	sed -i -e "s|^FREETYPEINC|#FREETYPEINC|g" \
 		-e "s|^X11INC|#X11INC|g" \
 		-e "s|^X11LIB|#X11LIB|g" config.mk
